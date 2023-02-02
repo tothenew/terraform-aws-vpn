@@ -8,7 +8,7 @@ resource "tls_cert_request" "root" {
   private_key_pem = tls_private_key.root[count.index].private_key_pem
 
   subject {
-    common_name  = "${var.root_common_name}"
+    common_name  = var.root_common_name
     organization = var.organization_name
   }
 }
