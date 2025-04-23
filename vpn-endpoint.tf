@@ -46,18 +46,17 @@ resource "aws_ec2_client_vpn_network_association" "default" {
   count                  = !var.create_aws_ec2_pritunl && var.create_aws_vpn ? length(var.subnet_ids): 0
   client_vpn_endpoint_id = aws_ec2_client_vpn_endpoint.default[0].id
   subnet_id              = element(var.subnet_ids, count.index)
-  security_groups        = [var.security_group_id == "" ? aws_security_group.default[0].id : var.security_group_id]
 }
 
-resource "aws_ec2_client_vpn_authorization_rule" "all_groups" {
-  count                  = !var.create_aws_ec2_pritunl && var.create_aws_vpn && length(var.allowed_access_groups) > 0 ? 0 : length(var.allowed_cidr_ranges)
+resource "aws_ec2_client_vpn_authorization_rule" "all_groups"{
+    count = (!var.create_aws_ec2_pritunl && var.create_aws_vpn && length(var.allowed_access_groups) == 0) ? length(var.allowed_cidr_ranges) : 0
   client_vpn_endpoint_id = aws_ec2_client_vpn_endpoint.default[0].id
   target_network_cidr    = var.allowed_cidr_ranges[count.index]
   authorize_all_groups   = true
 }
 
 resource "aws_ec2_client_vpn_authorization_rule" "allow_network" {
-  count                  = !var.create_aws_ec2_pritunl && var.create_aws_vpn && length(var.allowed_access_groups) > 0 ? 0 : length(var.allowed_cidr_ranges)
+  count                  = (!var.create_aws_ec2_pritunl && var.create_aws_vpn && length(var.allowed_access_groups) == 0) ? 1 : 0
   client_vpn_endpoint_id = aws_ec2_client_vpn_endpoint.default[0].id
   target_network_cidr    = "0.0.0.0/0"
   authorize_all_groups   = true
