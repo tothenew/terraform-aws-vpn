@@ -1,8 +1,8 @@
-vpc_id                = "vpc-09aceeb53e4bd8994"
+vpc_id                = "vpc-0123456789"
 project_name_prefix   = "dev-tothenew"
 key_name              = "my-ec2-keypair"
 instance_type         = "t3a.medium"
-subnet_id             = "subnet-045f3f18b376dd1dc"
+subnet_id             = "subnet-0123456789"
 volume_type           = "gp3"
 root_volume_size      = 50
 vpn_port              = 1194
@@ -12,7 +12,7 @@ common_tags = {
   Environment = "dev"
 }
 
-security_groups = ["sg-01148877dc6c3988c"]
+security_groups = ["sg-0123456789"]
 disable_api_termination = true
 ebs_optimized           = true
 delete_on_termination   = true
@@ -25,7 +25,7 @@ create_aws_ec2_pritunl  = true
 cidr = "172.16.0.0/16"
 
 subnet_ids = [
-  "subnet-045f3f18b376dd1dc"
+  "subnet-0123456789"
 ]
 
 allowed_cidr_ranges = [
@@ -47,7 +47,7 @@ logs_retention                   = 365
 authentication_type             = "certificate-authentication"
 authentication_saml_provider_arn = null
 split_tunnel                    = true
-security_group_id               = "sg-01148877dc6c3988c"
+security_group_id               = "sg-0123456789"
 enable_self_service_portal     = false
 
 ca_common_name      = "ToTheNew CA"
