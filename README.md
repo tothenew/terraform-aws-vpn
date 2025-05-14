@@ -9,7 +9,7 @@ This is a vpn module to use for baseline. You can use this module to setup pritu
 
 ```
 module "vpn" {
-  source                           = "git::https://github.com/tothenew/terraform-aws-vpn?ref=v0.0.1"
+  source = "git::https://github.com/tothenew/terraform-aws-vpn?ref=v0.0.1"
 }
 ```
 
