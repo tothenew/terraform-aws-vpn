@@ -10,18 +10,6 @@ This is a vpn module to use for baseline. You can use this module to setup pritu
 ```
 module "vpn" {
   source                           = "git::https://github.com/tothenew/terraform-aws-vpn?ref=v0.0.1"
-  vpc_id                           = var.vpc_id
-  project_name_prefix              = var.project_name_prefix
-  key_name                         = var.key_name
-  instance_type                    = var.instance_type
-  subnet_id                        = var.subnet_id
-  volume_type                      = var.volume_type
-  root_volume_size                 = var.root_volume_size
-  vpn_port                         = var.vpn_port
-  common_tags = {
-    "Project"     = "ToTheNew",
-    "Environment" = "dev"
-  }
 }
 ```
 
