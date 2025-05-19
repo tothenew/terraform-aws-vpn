@@ -58,7 +58,7 @@ resource "aws_instance" "ec2" {
 
 resource "aws_eip" "pritunl-eip" {
   count                   = !var.create_aws_vpn && var.create_aws_ec2_pritunl ? 1 : 0
-  vpc                       = true
+  domain                  = "vpc"
   instance                  = aws_instance.ec2[count.index].id
   associate_with_private_ip = aws_instance.ec2[count.index].private_ip
   tags                      = merge(var.common_tags, tomap({ "Name" : "${var.project_name_prefix}-vpn" }))
