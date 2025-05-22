@@ -1,32 +1,36 @@
 #!/bin/bash
 
-# Add MongoDB, OpenVPN, and Pritunl repo for Ubuntu 20.04 (focal)
-sudo tee /etc/apt/sources.list.d/mongodb-org.list << EOF
-deb [ signed-by=/usr/share/keyrings/mongodb-server-7.0.gpg ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/7.0 multiverse
-EOF
+set -e
 
-sudo tee /etc/apt/sources.list.d/openvpn.list << EOF
-deb [ signed-by=/usr/share/keyrings/openvpn-repo.gpg ] https://build.openvpn.net/debian/openvpn/stable focal main
-EOF
-
-sudo tee /etc/apt/sources.list.d/pritunl.list << EOF
-deb [ signed-by=/usr/share/keyrings/pritunl.gpg ] https://repo.pritunl.com/stable/apt focal main
-EOF
-
-# Install gnupg
+echo "[+] Updating and installing dependencies..."
 sudo apt-get update -y
-sudo apt-get install -y gnupg curl
+sudo apt-get install -y gnupg curl lsb-release
 
-# Add GPG keys
+echo "[+] Adding MongoDB 7.0 repository and GPG key..."
 curl -fsSL https://www.mongodb.org/static/pgp/server-7.0.asc | sudo gpg --dearmor -o /usr/share/keyrings/mongodb-server-7.0.gpg
-curl -fsSL https://swupdate.openvpn.net/repos/repo-public.gpg | sudo gpg --dearmor -o /usr/share/keyrings/openvpn-repo.gpg
-curl -fsSL https://raw.githubusercontent.com/pritunl/pgp/master/pritunl_repo_pub.asc | sudo gpg --dearmor -o /usr/share/keyrings/pritunl.gpg
+echo "deb [ signed-by=/usr/share/keyrings/mongodb-server-7.0.gpg ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/7.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org.list
 
-# Update and install packages
+echo "[+] Installing MongoDB..."
 sudo apt-get update -y
-sudo apt-get install -y pritunl openvpn mongodb-org wireguard wireguard-tools
+sudo apt-get install -y mongodb-org
 
-# Disable firewall and enable services
-sudo ufw disable
-sudo systemctl start pritunl mongod
-sudo systemctl enable pritunl mongod
+echo "[+] Disabling firewall (if enabled)..."
+sudo ufw disable || true
+
+echo "[+] Downloading Pritunl 1.32.4258.38 package for Debian Bookworm (Ubuntu 24.04 compatible)..."
+cd /tmp
+wget https://github.com/pritunl/pritunl/releases/download/1.32.4258.38/pritunl_1.32.4258.38-0debian1.bookworm_amd64.deb
+
+echo "[+] Installing Pritunl..."
+sudo dpkg -i pritunl_1.32.4258.38-0debian1.bookworm_amd64.deb || sudo apt-get install -f -y
+
+echo "[+] Installing VPN dependencies..."
+sudo apt-get install -y openvpn wireguard wireguard-tools
+
+echo "[+] Enabling and starting MongoDB and Pritunl services..."
+sudo systemctl enable mongod pritunl
+sudo systemctl start mongod pritunl
+
+echo "[✓] Installation complete!"
+pritunl version
+mongod --version
